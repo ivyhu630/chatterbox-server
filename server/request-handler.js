@@ -50,15 +50,20 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
-  console.log(request.headers);
-  console.log(request.data);
 
-  if (request.method === 'POST') {
+
+  if (request.method === 'POST' && request.url === '/classes/messages') {
+    request.on('data', d => console.log('data: ' + d));
+    request.on('data', message => messages.push(JSON.parse(message)));
     var statusCode = 201;
     // messages.push(request);
   }
-  if (request.method === 'GET') {
+  if (request.method === 'GET' && request.url === '/classes/messages') {
     var statusCode = 200;
+  }
+
+  if (!(request.url === '/classes/messages')) {
+    var statusCode = 404;
   }
   // The outgoing status.
 
@@ -84,6 +89,7 @@ var requestHandler = function(request, response) {
   // node to actually send all the data over to the client.
 
   response.end(JSON.stringify(messages));
+  // response.end(messages);
 };
 
 
